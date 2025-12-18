@@ -1,0 +1,33 @@
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y python3 python3-venv python3-pip build-essential
+mkdir ~/locust-benchmark
+cd ~/locust-benchmark
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install locust gevent
+nano exponential_locust.py
+
+python exponential_locust.py
+
+htop #to check that CPU is not going higher then 90
+
+Ctrl + C
+
+#Finding breakingpoint
+awk -F, '
+$3=="" && $6>0 {
+  c++
+  if (c==10)
+    print "BREAKING POINT:",
+          "Timestamp=" $1,
+          "Users=" $2,
+          "RPS=" $5,
+          "Fail/s=" $6,
+          "p95=" $12,
+          "p99=" $14
+}
+$3=="" && $6==0 { c=0 }
+' plaintext_stats_history.csv
+
+#Repeat for json_test_stats_history.csv, template_test_stats_history.csv, or db_test_stats_history.csv
