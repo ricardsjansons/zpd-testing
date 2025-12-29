@@ -1,0 +1,1 @@
+locust --headless --csv data/data --processes -1

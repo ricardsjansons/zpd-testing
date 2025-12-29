@@ -1,8 +1,10 @@
-from locust import HttpUser, task, between
-from locust.env import Environment
-from locust.stats import stats_printer, StatsCSVFileWriter
-from gevent import spawn, sleep
 import time
+
+from gevent import sleep, spawn
+from locust import HttpUser, between, task
+from locust.env import Environment
+from locust.stats import StatsCSVFileWriter, stats_printer
+
 
 class MyUser(HttpUser):
     host = "http://192.168.101.8"
@@ -11,7 +13,7 @@ class MyUser(HttpUser):
     @task
     def plaintext(self):
         self.client.get("/plaintext/")
-    
+
     # @task
     # def json(self):
     #     self.client.get("/json/")
@@ -39,13 +41,16 @@ runner = env.create_local_runner()
 
 # CSV writer
 percentiles = [50, 66, 75, 80, 90, 95, 98, 99, 99.9, 99.99]
-csv_writer = StatsCSVFileWriter(environment=env, percentiles_to_report=percentiles, base_filepath="db", full_history=True)
+csv_writer = StatsCSVFileWriter(
+    environment=env, percentiles_to_report=percentiles, base_filepath="db", full_history=True)
 spawn(csv_writer)
 
 # --- Periodic stats output ---
 spawn(stats_printer, env.runner.stats)
 
 # --- Exponential ramp-up ---
+
+
 def ramp_up():
     max_users = 1000
     step_seconds = 10
