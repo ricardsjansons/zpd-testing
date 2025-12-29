@@ -52,17 +52,6 @@ class User(HttpUser):
 class Shape(LoadTestShape):
     def tick(self):
         t = self.get_run_time()
-        users = EXP_BASE**self.get_run_time() * MIN_USERS
+        users = EXP_BASE**t * MIN_USERS
         users = min(int(users), MAX_USERS)
-        return (users, 100) if t < RUN_TIME else None
-
-
-# env = Environment(user_classes=[User])
-# runner = env.create_local_runner()
-#
-# web_ui = env.create_web_ui("127.0.0.1", 8089)
-#
-# runner.start(100, 10)
-#
-# while True:
-#     sleep(1)
+        return (users, users) if t < RUN_TIME else None
