@@ -37,7 +37,7 @@ class User(HttpUser):
 
     @task(w("TEMPLATE"))
     def task_template(self):
-        self.client.get(f"/template/{rstr(1000)}")
+        self.client.get(f"/template/{rstr(5)}")
 
     @task(w("DB_SELECT"))
     def task_db_select(self):
