@@ -3,7 +3,7 @@ import random
 from string import ascii_lowercase
 
 import dotenv
-from locust import HttpUser, LoadTestShape, task
+from locust import HttpUser, LoadTestShape, constant_throughput, task
 
 dotenv.load_dotenv()
 
@@ -25,6 +25,7 @@ def w(key: str):
 
 class User(HttpUser):
     host = os.environ["HOST"]
+    wait_time = constant_throughput(1)
 
     @task(w("PLAINTEXT"))
     def task_plaintext(self):
