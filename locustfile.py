@@ -56,4 +56,4 @@ class Shape(LoadTestShape):
         t = self.get_run_time()
         users = EXP_BASE**t * MIN_USERS
         users = min(int(users), MAX_USERS)
-        return (users, users) if t < RUN_TIME else None
+        return (users, SPAWN_RATE) if t < RUN_TIME else None
