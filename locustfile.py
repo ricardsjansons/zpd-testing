@@ -10,6 +10,8 @@ dotenv.load_dotenv()
 EXP_BASE = float(os.environ["EXP_BASE"])
 MIN_USERS = int(os.environ["MIN_USERS"])
 MAX_USERS = int(os.environ["MAX_USERS"])
+SPAWN_RATE = float(os.environ["SPAWN_RATE"])
+
 RUN_TIME = float(os.environ["RUN_TIME"])
 
 
