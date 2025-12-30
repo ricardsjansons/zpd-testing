@@ -3,16 +3,15 @@ import random
 from string import ascii_lowercase
 
 import dotenv
-from locust import HttpUser, LoadTestShape, constant_throughput, task
+from locust import HttpUser, LoadTestShape, between, constant_throughput, task
 
 dotenv.load_dotenv()
 
-EXP_BASE = float(os.environ["EXP_BASE"])
-MIN_USERS = int(os.environ["MIN_USERS"])
 MAX_USERS = int(os.environ["MAX_USERS"])
-SPAWN_RATE = float(os.environ["SPAWN_RATE"])
-
 RUN_TIME = float(os.environ["RUN_TIME"])
+EXPONENTIAL = bool(os.environ["EXPONENTIAL"] == "1")
+
+SPAWN_RATE = float(os.environ["SPAWN_RATE"])
 
 
 def rstr(k: int):
@@ -25,7 +24,7 @@ def w(key: str):
 
 class User(HttpUser):
     host = os.environ["HOST"]
-    wait_time = constant_throughput(1)
+    wait_time = between(0, 2)
 
     @task(w("PLAINTEXT"))
     def task_plaintext(self):
@@ -55,6 +54,13 @@ class User(HttpUser):
 class Shape(LoadTestShape):
     def tick(self):
         t = self.get_run_time()
-        users = EXP_BASE**t * MIN_USERS
-        users = min(int(users), MAX_USERS)
-        return (users, SPAWN_RATE) if t < RUN_TIME else None
+        if t > RUN_TIME:
+            return None
+
+        users: int
+        if EXPONENTIAL:
+            users = int(MAX_USERS**(t/RUN_TIME))
+        else:
+            users = MAX_USERS
+
+        return (users, SPAWN_RATE)

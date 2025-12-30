@@ -1,1 +1,1 @@
-locust --headless --processes -1 --only-summary --csv data/data
+locust --headless --processes -1 --csv data/test --only-summary --logfile logs/test.log
